@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS nodelet pluginlib roscpp std_msgs serial
 ## Build messages ##
 ####################
 
-add_message_files(DIRECTORY msg FILES VescState.msg VescStateStamped.msg VescRotorPos.msg VescRotorPosStamped.msg VescFeedbackStamped.msg)
+add_message_files(DIRECTORY msg FILES VescState.msg VescStateStamped.msg VescFeedbackStamped.msg)
 generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(INCLUDE_DIRS include CATKIN_DEPENDS nodelet pluginlib roscpp std_msgs serial message_runtime)

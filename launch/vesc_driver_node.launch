@@ -9,6 +9,7 @@
   <!-- VESC driver parameters -->
   <arg name="node_name" default="vesc_driver_node" />
   <arg name="port" default="/dev/ttyACM0" />
+  <arg name="frame_id" default="" />
   <arg name="control_mode" default="duty_cycle" />
   <arg name="feedback_mode" default="duty_cycle" />
   <arg name="servo_mode" default="off" />
@@ -17,6 +18,7 @@
   <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name)"
         output="screen" launch-prefix="$(arg launch_prefix)" >
     <param name="port" value="$(arg port)" />
+    <param name="frame_id" value="$(arg frame_id)" />
     <param name="control_mode" value="$(arg control_mode)" />
     <param name="feedback_mode" value="$(arg feedback_mode)" />
     <param name="servo_mode" value="$(arg servo_mode)" />

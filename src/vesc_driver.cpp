@@ -8,7 +8,6 @@
 
 #include<boost/bind.hpp>
 #include<vesc_driver/VescStateStamped.h>
-#include<vesc_driver/VescRotorPosStamped.h>
 #include<vesc_driver/VescFeedbackStamped.h>
 
 namespace vesc_driver
@@ -128,6 +127,13 @@ VescDriver::VescDriver(ros::NodeHandle nh, ros::NodeHandle private_nh):
       servo_mode_ = SERVO_MODE_OFF;
     }
 
+  // get frame_id
+  if (!private_nh.getParam("frame_id", frame_id_)) {
+    ROS_FATAL("VESC feedback frame id parameter required.");
+    ros::shutdown();
+    return;
+  }
+
   // create a 50Hz timer, used for state machine & polling VESC telemetry
   timer_ = nh.createTimer(ros::Duration(1.0/50.0), &VescDriver::timerCallback, this);
 }
@@ -187,6 +193,7 @@ void VescDriver::vescPacketCallback(const boost::shared_ptr<VescPacket const>& p
 
     vesc_driver::VescStateStamped::Ptr state_msg(new vesc_driver::VescStateStamped);
     state_msg->header.stamp = ros::Time::now();
+    state_msg->header.frame_id = frame_id_;
     state_msg->state.voltage_input = values->v_in();
     state_msg->state.temperature_pcb = values->temp_pcb();
     state_msg->state.current_motor = values->current_motor();
@@ -205,14 +212,17 @@ void VescDriver::vescPacketCallback(const boost::shared_ptr<VescPacket const>& p
 
     if (feedback_mode_ == FEEDBACK_MODE_DUTY_CYCLE) {
         feedback_msg->header.stamp = ros::Time::now();
+        feedback_msg->header.frame_id = frame_id_;
         feedback_msg->feedback = values->duty_now();
         feedback_pub_.publish(feedback_msg);
       } else if (feedback_mode_ == FEEDBACK_MODE_CURRENT) {
         feedback_msg->header.stamp = ros::Time::now();
+        feedback_msg->header.frame_id = frame_id_;
         feedback_msg->feedback = values->current_motor();
         feedback_pub_.publish(feedback_msg);
       } else if (feedback_mode_ == FEEDBACK_MODE_SPEED) {
         feedback_msg->header.stamp = ros::Time::now();
+        feedback_msg->header.frame_id = frame_id_;
         feedback_msg->feedback = values->rpm();
         feedback_pub_.publish(feedback_msg);
       }
@@ -223,6 +233,7 @@ void VescDriver::vescPacketCallback(const boost::shared_ptr<VescPacket const>& p
       boost::dynamic_pointer_cast<VescPacketRotorPos const>(packet);
 
       feedback_msg->header.stamp = ros::Time::now();
+      feedback_msg->header.frame_id = frame_id_;
       feedback_msg->feedback = rotor_pos->rotor_pos();
       feedback_pub_.publish(feedback_msg);
   }

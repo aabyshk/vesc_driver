@@ -49,6 +49,7 @@ private:
 
   // ROS services
   ros::Timer timer_;
+  std::string frame_id_;
   ros::Publisher state_pub_;
   ros::Publisher feedback_pub_;
   ros::Subscriber duty_cycle_sub_;
