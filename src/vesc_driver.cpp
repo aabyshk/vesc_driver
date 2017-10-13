@@ -194,19 +194,19 @@ void VescDriver::vescPacketCallback(const boost::shared_ptr<VescPacket const>& p
     vesc_driver::VescStateStamped::Ptr state_msg(new vesc_driver::VescStateStamped);
     state_msg->header.stamp = ros::Time::now();
     state_msg->header.frame_id = frame_id_;
-    state_msg->state.voltage_input = values->v_in();
-    state_msg->state.temperature_pcb = values->temp_pcb();
-    state_msg->state.current_motor = values->current_motor();
-    state_msg->state.current_input = values->current_in();
-    state_msg->state.speed = values->rpm();
-    state_msg->state.duty_cycle = values->duty_now();
-    state_msg->state.charge_drawn = values->amp_hours();
-    state_msg->state.charge_regen = values->amp_hours_charged();
-    state_msg->state.energy_drawn = values->watt_hours();
-    state_msg->state.energy_regen = values->watt_hours_charged();
-    state_msg->state.displacement = values->tachometer();
-    state_msg->state.distance_traveled = values->tachometer_abs();
-    state_msg->state.fault_code = values->fault_code();
+    state_msg->voltage_input = values->v_in();
+    state_msg->temperature_pcb = values->temp_pcb();
+    state_msg->current_motor = values->current_motor();
+    state_msg->current_input = values->current_in();
+    state_msg->speed = values->rpm();
+    state_msg->duty_cycle = values->duty_now();
+    state_msg->charge_drawn = values->amp_hours();
+    state_msg->charge_regen = values->amp_hours_charged();
+    state_msg->energy_drawn = values->watt_hours();
+    state_msg->energy_regen = values->watt_hours_charged();
+    state_msg->displacement = values->tachometer();
+    state_msg->distance_traveled = values->tachometer_abs();
+    state_msg->fault_code = values->fault_code();
 
     state_pub_.publish(state_msg);
 
