@@ -76,11 +76,12 @@ private:
 
   // feedback modes (possible states)
   typedef enum {
+    FEEDBACK_MODE_NONE = 0,
     FEEDBACK_MODE_DUTY_CYCLE,
     FEEDBACK_MODE_CURRENT,
     FEEDBACK_MODE_SPEED,
-    FEEDBACK_MODE_POSITION,
-    FEEDBACK_MODE_NONE
+    FEEDBACK_MODE_PID_POSITION,
+    FEEDBACK_MODE_ENCODER_POSITION
   } feedback_mode_t;
 
   // servo modes (possible states)

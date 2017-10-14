@@ -96,9 +96,12 @@ VescDriver::VescDriver(ros::NodeHandle nh, ros::NodeHandle private_nh):
     } else if (feedback_mode.compare("speed") == 0) {
       feedback_mode_ = FEEDBACK_MODE_SPEED;
       feedback_pub_ = nh.advertise<vesc_driver::VescFeedbackStamped>("feedback/motor/speed", 10);
-    } else if (feedback_mode.compare("position") == 0) {
-      feedback_mode_ = FEEDBACK_MODE_POSITION;
-      feedback_pub_ = nh.advertise<vesc_driver::VescFeedbackStamped>("feedback/motor/position", 10);
+    } else if (feedback_mode.compare("pid_position") == 0) {
+      feedback_mode_ = FEEDBACK_MODE_PID_POSITION;
+      feedback_pub_ = nh.advertise<vesc_driver::VescFeedbackStamped>("feedback/motor/pid_position", 10);
+    } else if (feedback_mode.compare("encoder_position") == 0) {
+      feedback_mode_ = FEEDBACK_MODE_ENCODER_POSITION;
+      feedback_pub_ = nh.advertise<vesc_driver::VescFeedbackStamped>("feedback/motor/encoder_position", 10);
     } else if (feedback_mode.compare("none") == 0) {
       feedback_mode_ = FEEDBACK_MODE_NONE;
     } else {
@@ -160,13 +163,16 @@ void VescDriver::timerCallback(const ros::TimerEvent& event)
       ROS_INFO("Connected to VESC with firmware version %d.%d", fw_version_major_, fw_version_minor_);
       driver_mode_ = DRIVER_MODE_OPERATING;
     }
-    if (feedback_mode_ == FEEDBACK_MODE_POSITION) {
+    if (feedback_mode_ == FEEDBACK_MODE_PID_POSITION) {
       vesc_.setDetect(DISP_POS_MODE_PID_POS);
+    }
+    if (feedback_mode_ == FEEDBACK_MODE_ENCODER_POSITION) {
+      vesc_.setDetect(DISP_POS_MODE_ENCODER);
     }
   } else if (driver_mode_ == DRIVER_MODE_OPERATING) {
     // poll for vesc state (telemetry)
     vesc_.requestState();
-    if (feedback_mode_ == FEEDBACK_MODE_POSITION) {
+    if (feedback_mode_ == FEEDBACK_MODE_PID_POSITION || feedback_mode_ == FEEDBACK_MODE_ENCODER_POSITION) {
       vesc_.requestRotorPos();
     }
   } else {
@@ -228,15 +234,17 @@ void VescDriver::vescPacketCallback(const boost::shared_ptr<VescPacket const>& p
       }
   }
 
-  if (packet->name() == "RotorPos" && feedback_mode_ == FEEDBACK_MODE_POSITION) {
-    boost::shared_ptr<VescPacketRotorPos const> rotor_pos =
-      boost::dynamic_pointer_cast<VescPacketRotorPos const>(packet);
+  if (packet->name() == "RotorPos") {
+    if (feedback_mode_ == FEEDBACK_MODE_PID_POSITION || feedback_mode_ == FEEDBACK_MODE_ENCODER_POSITION) {
+      boost::shared_ptr<VescPacketRotorPos const> rotor_pos =
+        boost::dynamic_pointer_cast<VescPacketRotorPos const>(packet);
 
-      feedback_msg->header.stamp = ros::Time::now();
-      feedback_msg->header.frame_id = frame_id_;
-      feedback_msg->feedback = rotor_pos->rotor_pos();
-      feedback_pub_.publish(feedback_msg);
-  }
+        feedback_msg->header.stamp = ros::Time::now();
+        feedback_msg->header.frame_id = frame_id_;
+        feedback_msg->feedback = rotor_pos->rotor_pos();
+        feedback_pub_.publish(feedback_msg);
+      }
+    }
 
 }
 

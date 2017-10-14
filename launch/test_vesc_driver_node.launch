@@ -7,12 +7,12 @@
   <arg unless="$(arg debug)" name="launch_prefix" value="" />
 
   <!-- VESC driver parameters -->
-  <arg name="node_name" default="vesc_driver_node" />
-  <arg name="port" default="/dev/ttyACM0" />
-  <arg name="frame_id" default="" />
-  <arg name="control_mode" default="duty_cycle" /> <!-- control_mode = {duty_cycle, current, brake, speed, position} -->
-  <arg name="feedback_mode" default="duty_cycle" /> <!-- feedback_mode = {duty_cycle, current, speed, pid_position, encoder_position} -->
-  <arg name="servo_mode" default="off" /> <!-- servo_mode = {on, off} -->
+  <arg name="node_name" value="vesc_driver_node" />
+  <arg name="port" value="/dev/ttyACM0" />
+  <arg name="frame_id" value="" />
+  <arg name="control_mode" value="duty_cycle" /> <!-- control_mode = {duty_cycle, current, brake, speed, position} -->
+  <arg name="feedback_mode" value="encoder_position" /> <!-- feedback_mode = {duty_cycle, current, speed, pid_position, encoder_position} -->
+  <arg name="servo_mode" value="off" /> <!-- servo_mode = {on, off} -->
 
   <!-- VESC driver node -->
   <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name)"
