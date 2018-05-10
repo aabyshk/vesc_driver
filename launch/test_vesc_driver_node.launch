@@ -11,7 +11,7 @@
   <arg name="port" value="/dev/ttyACM0" />
   <arg name="frame_id" value="" />
   <arg name="control_mode" value="duty_cycle" /> <!-- control_mode = {duty_cycle, current, brake, speed, position} -->
-  <arg name="feedback_mode" value="encoder_position" /> <!-- feedback_mode = {duty_cycle, current, speed, pid_position, encoder_position} -->
+  <arg name="feedback_mode" value="pid_position" /> <!-- feedback_mode = {duty_cycle, current, speed, pid_position, encoder_position} -->
   <arg name="servo_mode" value="off" /> <!-- servo_mode = {on, off} -->
 
   <!-- VESC driver node -->
